@@ -2,7 +2,7 @@ import secrets
 
 
 def testeNumero(num, k=40):
-    if num <= 1 or num % 2 == 0:
+    if num % 2 == 0:
         return False
 
     n = num - 1
