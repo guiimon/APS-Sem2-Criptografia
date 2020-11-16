@@ -1,7 +1,34 @@
 import rsa
 import os
 import sys
+while True:
+    NomeChavePub = input("Digite o nome do arquivo .pem que contém a Chave Publica: ")
+    if os.path.exists(NomeChavePub+".pem") == True:
+        arquivoPublico = open(NomeChavePub+".pem", "rb")
+        infodoArquivo = arquivoPublico.read()
+        arquivoPublico.close()
+        try:
+            ChavePublica = rsa.PublicKey.load_pkcs1(infodoArquivo)
+        except:
+            print("Arquivo não é do padrão de Chave Publica, tente outro arquivo.")
+        else:
+            while True:
+                mensagem = input("Digite a mensagem a ser criptografada: ")
+                if len(mensagem) <= 120:
+                    criptografada = rsa.encrypt(mensagem.encode('utf8'),ChavePublica)
+                    NomeMensagem = input("Digite o nome do arquivo para ser salva a mensagem criptografada: ")
+                    arquivo = open(NomeMensagem+".txt","wb")
+                    arquivo.write(criptografada)
+                    arquivo.close()
+                    print(f"Arquivo {NomeMensagem}.txt criado com sucesso.")
+                    break
+                else:
+                    print("Mensagem acima do limite de caracteres permitidos, digite uma mensagem de até 120 caracteres.")
+            break
+    else:
+        sys.exit("Arquivo informado não existe, tente outro nome de arquivo.")
 """
+--- Tentativa inicial de Criptografia ---
 from Chaves import inversoMod
 def criptografar(codigo, publica1, publica2):
     resultado = inversoMod(codigo**publica1,publica2)
@@ -35,29 +62,3 @@ while limitador != 0:
     else:
         print("mensagem ultrapassa o limite, tente novamente")
 """
-while True:
-    NomeChavePub = input("Digite o nome do arquivo .pem que contém a Chave Publica: ")
-    if os.path.exists(NomeChavePub+".pem") == True:
-        arquivoPublico = open(NomeChavePub+".pem", "rb")
-        infodoArquivo = arquivoPublico.read()
-        arquivoPublico.close()
-        try:
-            ChavePublica = rsa.PublicKey.load_pkcs1(infodoArquivo)
-        except:
-            print("Arquivo não é do padrão de Chave Publica, tente outro arquivo.")
-        else:
-            while True:
-                mensagem = input("Digite a mensagem a ser criptografada: ")
-                if len(mensagem) <= 120:
-                    criptografada = rsa.encrypt(mensagem.encode('utf8'),ChavePublica)
-                    NomeMensagem = input("Digite o nome do arquivo para ser salva a mensagem criptografada: ")
-                    arquivo = open(NomeMensagem+".txt","wb")
-                    arquivo.write(criptografada)
-                    arquivo.close()
-                    print(f"Arquivo {NomeMensagem}.txt criado com sucesso.")
-                    break
-                else:
-                    print("Mensagem acima do limite de caracteres permitidos, digite uma mensagem de até 120 caracteres.")
-            break
-    else:
-        sys.exit("Arquivo informado não existe, tente outro nome de arquivo.")
